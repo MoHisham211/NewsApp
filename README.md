@@ -1,5 +1,12 @@
 # NewsApp
-News App is a simple news app 🗞️ which uses NewsAPI to fetch top news headlines from the API. The main aim of this app is to be a leading example of how to build Modern Android applications for all Android Developers
+News App is a simple news app 
+🗞️ which uses NewsAPI to fetch top news headlines from the API. The main aim of this app is to be a leading example of how to build Modern Android applications for all Android Developers  **using Java implemented with:**
+
+- Retrofit
+- ListView
+- News API: https://newsapi.org/
+
+
 > ![Screenshot_1609697645](https://user-images.githubusercontent.com/62261376/103485661-a4fde000-4e00-11eb-8595-78da818d541c.png)
 > **SplashScreen**
 > ![Screenshot_1609697627](https://user-images.githubusercontent.com/62261376/103485667-c068eb00-4e00-11eb-9bdc-8e2fb7476e86.png)
