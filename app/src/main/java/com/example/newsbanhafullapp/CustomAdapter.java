@@ -8,11 +8,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class CustomAdapter extends BaseAdapter {
+public class CustomAdapter  extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
+
     private ArrayList<Article> articles;
     private Activity activity;
 
@@ -21,42 +25,43 @@ public class CustomAdapter extends BaseAdapter {
         this.activity = activity;
     }
 
+    @NonNull
     @Override
-    public int getCount() {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater=activity.getLayoutInflater();
+        View view=inflater.inflate(R.layout.list_item,parent,false);
+        ViewHolder viewHolder=new ViewHolder(view);
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.textView.setText(articles.get(position).getTitle());
+        String dwonloadedImage=articles.get(position).getUrlToImage();
+        if (dwonloadedImage!=null && !dwonloadedImage.isEmpty())
+            Picasso
+                    .get()
+                    .load(articles.get(position).getUrlToImage())
+                    .placeholder(R.drawable.ic_baseline_insert_photo_24)
+                    .into(holder.imageView);
+        else
+            holder.imageView.setImageResource(R.drawable.ic_baseline_broken_image_24);
+
+
+    }
+
+    @Override
+    public int getItemCount() {
         return articles.size();
     }
 
-    @Override
-    public Object getItem(int position) {
-        return articles.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView==null)
-            convertView= activity.getLayoutInflater().inflate(R.layout.list_item,parent,false);
-
-        TextView tvTitle=convertView.findViewById(R.id.tv);
-        ImageView imageView=convertView.findViewById(R.id.iv);
-
-        tvTitle.setText(articles.get(position).getTitle());
-
-       String dwonloadedImage=articles.get(position).getUrlToImage();
-
-        if (dwonloadedImage!=null && !dwonloadedImage.isEmpty())
-        Picasso
-                .get()
-                .load(articles.get(position).getUrlToImage())
-                .placeholder(R.drawable.ic_baseline_insert_photo_24)
-                .into(imageView);
-        else
-            imageView.setImageResource(R.drawable.ic_baseline_broken_image_24);
-
-        return convertView;
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView;
+        TextView textView;
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imageView=itemView.findViewById(R.id.iv);
+            textView=itemView.findViewById(R.id.tv);
+        }
     }
 }

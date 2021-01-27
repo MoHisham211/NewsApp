@@ -7,6 +7,19 @@
     android:background="@color/colorTextSubtitle"
     tools:context=".HomeActivity">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_settings_24"
+        tools:ignore="MissingConstraints,VectorDrawableCompat" />
+
     <ImageView
         android:id="@+id/background"
         android:layout_width="match_parent"
@@ -307,8 +320,10 @@
                             android:textSize="16sp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.Guideline

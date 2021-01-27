@@ -2,6 +2,8 @@ package com.example.newsbanhafullapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
@@ -25,43 +27,53 @@ public class MainActivity extends AppCompatActivity {
 
     //https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=99410b4dcd75422c8cf062e7e4b1cc8b
     private String sentCategory;
-    SwipeRefreshLayout swipeRefreshLayout;
+    private String lang;
+    private SwipeRefreshLayout swipeRefreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         sentCategory=getIntent().getStringExtra(Constance.CATEGORY_KEY);
+        lang=getIntent().getStringExtra(Constance.LANG_KEY);
 
-        lodeData(sentCategory);
+        lodeData(sentCategory,lang);
         swipeRefreshLayout=findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(false);
-                lodeData(sentCategory);
+                lodeData(sentCategory,lang);
             }
         });
     }
 
     private void showListView(ArrayList<Article> articles) {
         CustomAdapter adapter=new CustomAdapter(articles,this);
-        ListView listView=findViewById(R.id.lv);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent=new Intent(MainActivity.this,Details.class);
-                intent.putExtra("Image",articles.get(position).getUrlToImage());
-                intent.putExtra("Title",articles.get(position).getTitle());
-                intent.putExtra("Desc",articles.get(position).getDescription());
-                intent.putExtra("Link",articles.get(position).getUrl());
-                intent.putExtra("publishedAt",articles.get(position).getPublishedAt());
-                startActivity(intent);
-            }
-        });
+        RecyclerView rv=findViewById(R.id.rv);
+        LinearLayoutManager manager=new LinearLayoutManager(this);
+        rv.setLayoutManager(manager);
+        rv.setAdapter(adapter);
+        rv.addOnItemTouchListener(
+                new RecyclerItemClickListener(this, rv ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        Intent intent=new Intent(MainActivity.this,Details.class);
+                        intent.putExtra("Image",articles.get(position).getUrlToImage());
+                        intent.putExtra("Title",articles.get(position).getTitle());
+                        intent.putExtra("Desc",articles.get(position).getDescription());
+                        intent.putExtra("Link",articles.get(position).getUrl());
+                        intent.putExtra("publishedAt",articles.get(position).getPublishedAt());
+                        startActivity(intent);
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        // do whatever
+                    }
+                })
+        );
     }
-    private void lodeData(String Category)
+
+    private void lodeData(String Category,String Lang)
     {
         ProgressBar progressBar=findViewById(R.id.pb);
         Retrofit retrofit=new Retrofit.Builder()
@@ -69,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         CallableInterface callable=retrofit.create(CallableInterface.class);
-        Call<NewsModel> newsModelCall=callable.getData(Category);
+        Call<NewsModel> newsModelCall=callable.getData(Category,Lang);
 
         newsModelCall.enqueue(new Callback<NewsModel>() {
             @Override
